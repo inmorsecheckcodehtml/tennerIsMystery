@@ -35,7 +35,7 @@ button:hover{border-color:rgba(51,255,102,0.28);transform:translateY(-2px)}
   <div class="popup" role="dialog" aria-label="tennerIsMystery">
     <h1>tennerIsMystery</h1>
 
-    <!-- Braille subtitle triggers download -->
+    <!-- Braille subtitle triggers forced download -->
     <div class="subtitle">
       <a id="downloadLink" href="adventure.zip">
         ⠠⠽⠕⠥⠗⠀⠝⠑⠭⠞⠀⠁⠙⠧⠑⠝⠞⠥⠗⠑
@@ -55,13 +55,17 @@ button:hover{border-color:rgba(51,255,102,0.28);transform:translateY(-2px)}
 </div>
 
 <script>
-const lines=[
+// Test JS is running
+alert("JS loaded!");
+
+// typing animation lines
+const lines = [
   'tennerIsMystery',
   '⠠⠽⠕⠥⠗⠀⠝⠑⠭⠞⠀⠁⠙⠧⠑⠝⠞⠥⠗⠑',
   '01111001 01101111 01110101 01110010 01100101 00100000 01101111 01101110 01100101 00100000 01110011 01110100 01100101 01110000 00100000 01100011 01101100 01101111 01110011 01100101 01110010 00100000 01110100 01101111 00100000 01110100 01101000 01100101 00100000 01101101 01111001 01110011 01110100 01100101 01110010 01111001'
 ];
 
-const box=document.getElementById('codeBox');
+const box = document.getElementById('codeBox');
 
 function typeLines(lines,speed=14){
   box.textContent='';
@@ -85,7 +89,7 @@ function typeLines(lines,speed=14){
 }
 typeLines(lines,14);
 
-// fullscreen button
+// fullscreen
 document.getElementById('enterBtn').addEventListener('click',async()=>{
   if(document.documentElement.requestFullscreen){
     try{await document.documentElement.requestFullscreen()}catch(e){}
@@ -93,12 +97,12 @@ document.getElementById('enterBtn').addEventListener('click',async()=>{
   typeLines(lines,8);
 });
 
-// popup button
+// popup window
 document.getElementById('popupBtn').addEventListener('click',()=>{
   window.open(location.href,'tennerPopup','toolbar=no,menubar=no,scrollbars=no,resizable=no,width=600,height=420');
 });
 
-// reveal button
+// reveal binary
 document.getElementById('revealBtn').addEventListener('click',()=>{
   const binary=lines[2].split(' ');
   try{
@@ -121,14 +125,14 @@ document.getElementById('downloadLink').addEventListener('click',async function(
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(a.href);
-  }catch(err){alert('Failed to download ZIP. Try opening directly: '+url);}
+  }catch(err){alert('Failed to download ZIP. Open directly: '+url);}
 });
 
 // draggable panel
 let isDown=false,startX,startY;
 const panel=document.querySelector('.popup');
 panel.addEventListener('pointerdown',e=>{isDown=true;startX=e.clientX;startY=e.clientY;panel.setPointerCapture(e.pointerId);});
-panel.addEventListener('pointermove',e=>{if(!isDown)return;const dx=e.clientX-startX,dy=e.clientY-startY;panel.style.transform=`translate(${dx}px,${dy}px)`;});
+panel.addEventListener('pointermove',e=>{if(!isDown) return; const dx=e.clientX-startX,dy=e.clientY-startY;panel.style.transform=`translate(${dx}px,${dy}px)`;});
 panel.addEventListener('pointerup',e=>{isDown=false;panel.releasePointerCapture(e.pointerId);setTimeout(()=>panel.style.transform='none',250);});
 </script>
 </body>
