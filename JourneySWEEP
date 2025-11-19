@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>tenner</title>
+<style>
+:root{--bg:#020317;--text:#cfeaff}
+html,body{height:100%;margin:0}
+body{display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#020317,#05061a);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--text)}
+.card{padding:40px;border-radius:12px;text-align:center;backdrop-filter:blur(6px);}
+h1{letter-spacing:6px;margin:0;font-size:44px}
+p{opacity:0.55;margin-top:8px}
+.blink{width:10px;height:24px;background:var(--text);display:inline-block;margin-left:8px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>TENNER<span class="blink"></span></h1>
+<p>—</p>
+</div>
+
+
+<!--
+.,.,., , .,., ., ., ..,,,
+Q0FFU0FSOiBzaGlmdCA2ClVTVUUgQVRLWEogSElLSlI=
+-->
+
+
+<script>
+// minimal: click anywhere to play the morse (no UI)
+const morseString = '.... .- .-.. .-.. --- / --. .- .-. -.. . -. / ... . -.-. .-. . -';
+
+
+function playMorse(morse, speed = 0.09){
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+let t = ctx.currentTime;
+function beep(length){
+const o = ctx.createOscillator();
+const g = ctx.createGain();
+o.connect(g); g.connect(ctx.destination);
+o.type = 'sine'; o.frequency.value = 800;
+g.gain.setValueAtTime(0.0001, t);
+g.gain.exponentialRampToValueAtTime(0.5, t + 0.01);
+o.start(t);
+t += length;
+g.gain.exponentialRampToValueAtTime(0.0001, t);
+o.stop(t + 0.02);
+}
+for (const ch of morse){
+if (ch === '.') { beep(speed); t += speed; }
+else if (ch === '-') { beep(speed*3); t += speed; }
+else if (ch === ' ') { t += speed*2; }
+else if (ch === '/') { t += speed*4; }
+}
+}
+
+
+document.addEventListener('click', ()=>{
+try{ playMorse(morseString); }catch(e){/* silence */}
+});
+
+
+// hoster note in console
+console.log('tenner (minimal) loaded.');
+</script>
+
+
+</body>
+</html>
