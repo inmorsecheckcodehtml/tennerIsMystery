@@ -37,7 +37,7 @@ button:hover{border-color:rgba(51,255,102,0.28);transform:translateY(-2px)}
 
     <!-- Braille subtitle triggers forced download -->
     <div class="subtitle">
-      <a id="downloadLink" href="adventure.zip">
+      <a id="downloadLink" href="./adventure.zip">
         ⠠⠽⠕⠥⠗⠀⠝⠑⠭⠞⠀⠁⠙⠧⠑⠝⠞⠥⠗⠑
       </a>
     </div>
@@ -55,10 +55,7 @@ button:hover{border-color:rgba(51,255,102,0.28);transform:translateY(-2px)}
 </div>
 
 <script>
-// Test JS is running
-alert("JS loaded!");
-
-// typing animation lines
+// typing animation
 const lines = [
   'tennerIsMystery',
   '⠠⠽⠕⠥⠗⠀⠝⠑⠭⠞⠀⠁⠙⠧⠑⠝⠞⠥⠗⠑',
@@ -111,21 +108,24 @@ document.getElementById('revealBtn').addEventListener('click',()=>{
   }catch(e){alert('Could not decode binary.')}
 });
 
-// braille download
+// braille download (fixed relative path)
 document.getElementById('downloadLink').addEventListener('click',async function(e){
   e.preventDefault();
-  const url=this.href;
+  const url = new URL(this.getAttribute('href'), location.href).href;
   try{
-    const response=await fetch(url);
-    const blob=await response.blob();
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='adventure.zip';
+    const response = await fetch(url);
+    if(!response.ok) throw new Error('Network error');
+    const blob = await response.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'adventure.zip';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(a.href);
-  }catch(err){alert('Failed to download ZIP. Open directly: '+url);}
+  }catch(err){
+    alert('Failed to download ZIP. Open directly: '+url);
+  }
 });
 
 // draggable panel
