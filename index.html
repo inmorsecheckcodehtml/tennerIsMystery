@@ -17,7 +17,7 @@
   }
   h1{margin:0 0 8px 0;font-size:1.6rem;letter-spacing:1px}
   .subtitle{font-size:.9rem;margin-bottom:18px;color:rgba(51,255,102,0.9)}
-  .subtitle a{color:inherit;text-decoration:none}
+  .subtitle a{color:inherit;text-decoration:none;cursor:pointer}
   .code{
     background:#000;border:1px dashed rgba(51,255,102,0.08);padding:18px;border-radius:8px;min-height:120px;
     display:flex;flex-direction:column;gap:8px;
@@ -35,9 +35,9 @@
   <div class="popup" role="dialog" aria-label="tennerIsMystery">
     <h1>tennerIsMystery</h1>
 
-    <!-- Braille subtitle downloads adventure.zip -->
+    <!-- Braille subtitle triggers forced download -->
     <div class="subtitle">
-      <a id="downloadLink" href="adventure.zip" download target="_blank">
+      <a id="downloadLink" href="adventure.zip">
         ⠠⠽⠕⠥⠗⠀⠝⠑⠭⠞⠀⠁⠙⠧⠑⠝⠞⠥⠗⠑
       </a>
     </div>
@@ -52,6 +52,7 @@
       <button id="revealBtn">Reveal plain text</button>
     </div>
 
+    <!-- updated binary description -->
     <div class="hint">01111001 01101111 01110101 01110010 01100101 00100000 01101111 01101110 01100101 00100000 01110011 01110100 01100101 01110000 00100000 01100011 01101100 01101111 01110011 01100101 01110010 00100000 01110100 01101111 00100000 01110100 01101000 01100101 00100000 01101101 01111001 01110011 01110100 01100101 01110010 01111001</div>
   </div>
 </div>
@@ -112,6 +113,26 @@ document.getElementById('revealBtn').addEventListener('click', ()=>{
   }
 });
 
+// Force ZIP download when clicking braille
+document.getElementById('downloadLink').addEventListener('click', async function(e) {
+  e.preventDefault();
+  const url = this.href;
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'adventure.zip';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  } catch (err) {
+    alert('Failed to download ZIP. Try opening it directly: ' + url);
+  }
+});
+
+// draggable panel
 let isDown=false, startX, startY;
 const panel = document.querySelector('.popup');
 panel.addEventListener('pointerdown', (e)=>{ isDown=true; startX=e.clientX; startY=e.clientY; panel.setPointerCapture(e.pointerId);});
