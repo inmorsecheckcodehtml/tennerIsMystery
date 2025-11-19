@@ -35,9 +35,9 @@
   <div class="popup" role="dialog" aria-label="tennerIsMystery">
     <h1>tennerIsMystery</h1>
 
-    <!-- subtitle is a download link to adventure.zip (place adventure.zip in repo root) -->
+    <!-- Braille subtitle downloads adventure.zip -->
     <div class="subtitle">
-      <a id="downloadLink" href="adventure.zip" download>
+      <a id="downloadLink" href="adventure.zip" download target="_blank">
         ⠠⠽⠕⠥⠗⠀⠝⠑⠭⠞⠀⠁⠙⠧⠑⠝⠞⠥⠗⠑
       </a>
     </div>
@@ -52,7 +52,6 @@
       <button id="revealBtn">Reveal plain text</button>
     </div>
 
-    <!-- updated binary description -->
     <div class="hint">01111001 01101111 01110101 01110010 01100101 00100000 01101111 01101110 01100101 00100000 01110011 01110100 01100101 01110000 00100000 01100011 01101100 01101111 01110011 01100101 01110010 00100000 01110100 01101111 00100000 01110100 01101000 01100101 00100000 01101101 01111001 01110011 01110100 01100101 01110010 01111001</div>
   </div>
 </div>
@@ -81,7 +80,6 @@ function typeLines(lines, speed=16){
       if(pos>=line.length){
         clearInterval(t);
         i++;
-        // small pause between lines
         setTimeout(typeLine, 450);
       }
     }, speed);
@@ -89,26 +87,21 @@ function typeLines(lines, speed=16){
   typeLine();
 }
 
-// initial typing
 typeLines(lines, 14);
 
-// fullscreen on click (browsers require user interaction)
 document.getElementById('enterBtn').addEventListener('click', async ()=>{
   if(document.documentElement.requestFullscreen) {
     try { await document.documentElement.requestFullscreen(); } catch(e){}
   }
-  // replay typing to heighten effect
   typeLines(lines, 8);
 });
 
-// small popup window open (may be blocked by popup blockers if not user-initiated)
 document.getElementById('popupBtn').addEventListener('click', ()=>{
   const url = location.href;
   const opts = 'toolbar=no,menubar=no,scrollbars=no,resizable=no,width=600,height=420';
   window.open(url, 'tennerPopup', opts);
 });
 
-// reveal plain-text decode of the binary string
 document.getElementById('revealBtn').addEventListener('click', ()=>{
   const binary = lines[2].split(' ');
   try {
@@ -119,24 +112,6 @@ document.getElementById('revealBtn').addEventListener('click', ()=>{
   }
 });
 
-// small UX: warn if adventure.zip not found (fetches HEAD to see if file exists)
-async function checkZip(){
-  try {
-    const r = await fetch('adventure.zip', { method: 'HEAD' });
-    const link = document.getElementById('downloadLink');
-    if(!r.ok) {
-      link.title = 'adventure.zip not found in repo root. Upload it to enable download.';
-      link.style.opacity = '0.8';
-    } else {
-      link.title = 'Download adventure.zip';
-    }
-  } catch(e){
-    // network blocked or GitHub raw blocking; leave as-is
-  }
-}
-checkZip();
-
-// make the whole panel draggable-ish on click-and-hold for fun (touch friendly)
 let isDown=false, startX, startY;
 const panel = document.querySelector('.popup');
 panel.addEventListener('pointerdown', (e)=>{ isDown=true; startX=e.clientX; startY=e.clientY; panel.setPointerCapture(e.pointerId);});
